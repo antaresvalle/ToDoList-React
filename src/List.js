@@ -15,6 +15,7 @@ class List extends React.Component{
         this.handleAddTask = this.handleAddTask.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
 
         // Firebase events
         this.handleChildAdded = this.handleChildAdded.bind(this);
@@ -87,6 +88,13 @@ class List extends React.Component{
         this.setState({ tasks: newTasks});
     }
 
+    handleEdit(text, id){
+        const taskRef = this.tasksRef.child(id);
+        taskRef.update({
+            text: text
+        });
+    }
+
     // 
     render(){
         return (
@@ -113,7 +121,7 @@ class List extends React.Component{
                 <section>
                     <AddForm onAdd={this.handleAddTask} />
                     <h4>Tasks</h4>
-                    <TaskList tasks={this.state.tasks} onCheck={this.handleCheck} onDelete={this.handleDelete}/>
+                    <TaskList tasks={this.state.tasks} onCheck={this.handleCheck} onDelete={this.handleDelete} onEdit={this.handleEdit}/>
                 </section>
              </section>
             )
@@ -161,7 +169,7 @@ function TaskList(props) {
     return (
         <ul>
         {props.tasks.map(task => (
-            <Task key={task.id} text={task.text} id={task.id} done={task.done} onCheck={props.onCheck} onDelete={props.onDelete}/> 
+            <Task key={task.id} text={task.text} id={task.id} done={task.done} onCheck={props.onCheck} onDelete={props.onDelete} onEdit={props.onEdit}/> 
         ))}
         </ul>);
 }
@@ -170,20 +178,62 @@ class Task extends React.Component{
     constructor(props){
         super(props);
         this.state = {
+            editing: false,
             text: '',
+        }
+        this.handleEdit = this.handleEdit.bind(this);
+        this.makeEditable = this.makeEditable.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
+        this.handleKeyUp = this.handleKeyUp.bind(this);
+
+        this.inputRef = React.createRef();
+    }
+
+    handleEdit(){
+        this.props.onEdit(this.state.text, this.props.id);
+        this.setState({editing:false});
+    }
+
+    makeEditable(){
+        this.setState({editing: true, text: this.props.text});
+    }
+
+    handleInputChange(e){
+        this.setState({ text: e.target.value});
+    }
+
+    handleKeyUp(e){
+        if(e.keyCode===13){
+            this.handleEdit(e);
         }
     }
 
+    handleCancel(){
+        this.setState({editing: false});
+    }
+    
     render(){
-        return (
-            <div className="form-check task" id={this.props.id}>
-                <input className="form-check-input" type="checkbox" checked={this.props.done} onChange={this.props.onCheck}/>
-                <label className="form-check-label" for="defaultCheck1">
-                    <li key={this.props.id}>{this.props.text}</li>
-                </label>
-                <button onClick={this.props.onDelete}>delete</button>
-            </div>
-        );
+        if(this.state.editing){
+            return (
+                <div className="form-check task" id={this.props.id}>
+                    <input type="text" ref={this.inputRef} id={`input-${this.props.id}`} value={this.state.text} onChange={this.handleInputChange} onKeyUp={this.handleKeyUp}/>
+                    <button onClick={this.handleCancel}>cancel</button>
+                    <button onClick={this.handleEdit}>save</button>
+                </div>
+            );
+        } else {
+            return (
+                <div className="form-check task" id={this.props.id}>
+                    <input className="form-check-input" type="checkbox" checked={this.props.done} onChange={this.props.onCheck}/>
+                    <label className="form-check-label" htmlFor="defaultCheck1">
+                        <li key={this.props.id}>{this.props.text}</li>
+                    </label>
+                    <button onClick={this.makeEditable}>edit</button>
+                    <button onClick={this.props.onDelete}>delete</button>
+                </div>
+            );
+        } 
     }
 }
 

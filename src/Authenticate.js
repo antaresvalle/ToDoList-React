@@ -49,12 +49,12 @@ class Authenticate extends React.Component {
                 <div>{this.state.error}</div>
                 <h1>Task List</h1>
                 <div className="form-group">
-                    <label for="inputEmail1">Email address</label>
+                    <label htmlFor="inputEmail1">Email address</label>
                     <input type="email" className="form-control" id="inputEmail1" aria-describedby="emailHelp" placeholder="Enter email" value={this.state.email} onChange={this.handleEmailChange}/>
                         <small id="emailHelp" className="form-text text-muted">We'll never share your email with anyone else.</small>
                  </div>
                     <div className="form-group">
-                        <label for="exampleInputPassword1">Password</label>
+                        <label htmlFor="exampleInputPassword1">Password</label>
                         <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password" value={this.state.password} onChange={this.handlePasswordChange}/>
                 </div>
                 <button type='button' className="btn btn-primary auth" onClick={this.handleLogin}>SignIn</button>
