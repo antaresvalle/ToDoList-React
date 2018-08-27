@@ -91,20 +91,26 @@ class AddForm extends React.Component{
 
         this.handleChange = this.handleChange.bind(this);
         this.handleClick = this.handleClick.bind(this);
+        this.handleKeyUp = this.handleKeyUp.bind(this);
     }
 
     handleChange(e){
         this.setState({value:e.target.value});
     }
-    handleClick(e){
+    handleClick(){
         this.props.onAdd(this.state.value); //
         this.setState({value:""});
+    }
+    handleKeyUp(e){
+        if(e.keyCode===13){
+            this.handleClick();
+        }
     }
 
     render(){
         return(
             <div className='addForm'>
-                <input type='text' className="input-task" placeholder="New Task" onChange={this.handleChange} value={this.state.value} />
+                <input type='text' className="input-task" placeholder="New Task" onKeyUp={this.handleKeyUp} onChange={this.handleChange} value={this.state.value} />
                 <button type='button' onClick={this.handleClick}>Add</button>
             </div>
         );
