@@ -57,8 +57,8 @@ class Authenticate extends React.Component {
                         <label for="exampleInputPassword1">Password</label>
                         <input type="password" className="form-control" id="exampleInputPassword1" placeholder="Password" value={this.state.password} onChange={this.handlePasswordChange}/>
                 </div>
-                <button type='button' className="btn btn-primary" onClick={this.handleLogin}>SignIn</button>
-                <button type="button" className="btn btn-primary" onClick={this.handleCreateUser}>New User</button>
+                <button type='button' className="btn btn-primary auth" onClick={this.handleLogin}>SignIn</button>
+                <button type="button" className="btn btn-primary auth" onClick={this.handleCreateUser}>New User</button>
                 
             </form>
         );

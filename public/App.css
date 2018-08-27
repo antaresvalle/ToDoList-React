@@ -1,0 +1,19 @@
+main {
+    padding: 2rem;
+}
+
+button.btn.btn-primary.auth {
+    margin: 1rem;
+    padding: 0.5rem 3rem;
+}
+button.btn.btn-primary.right {
+    float: right;
+}
+.form-check{
+    border: 1px solid gray;
+    padding: 0.8rem;
+}
+
+.input-task {
+    width: 80%;
+}

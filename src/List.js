@@ -52,11 +52,28 @@ class List extends React.Component{
     render(){
         return (
             <section>
-                <p>{this.props.user.email}</p>
-                <button type="button" onClick={()=>firebase.auth().signOut()}>Logout</button>
+                <div>
+                    <div className="row">
+                        <div className="col">
+                            <h2>TaskList</h2>
+                        </div>
+                        <div className="col">
+                            <button type="button" className="btn btn-primary right" onClick={()=>firebase.auth().signOut()}>Logout</button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div className="row">
+                        <div className="col">
+                            <p>Welcome back: <strong>{this.props.user.email}</strong></p>
+                        </div>
+                    </div>
+                </div>
+                
+                
                 <section>
                     <AddForm onAdd={this.handleAddTask} />
-                    <h2>Tasks</h2>
+                    <h4>Tasks</h4>
                     <TaskList tasks={this.state.tasks}/>
                 </section>
              </section>
@@ -87,12 +104,12 @@ class AddForm extends React.Component{
     render(){
         return(
             <div className='addForm'>
-            <input type='text' onChange={this.handleChange} value={this.state.value}/>
-            <button type='button' onClick={this.handleClick}>Add</button>
-        </div>
+                <input type='text' className="input-task" placeholder="New Task" onChange={this.handleChange} value={this.state.value} />
+                <button type='button' onClick={this.handleClick}>Add</button>
+            </div>
         );
         
-}
+    }
 }
 
 function TaskList(props) {
@@ -107,11 +124,11 @@ function TaskList(props) {
 function Task(props){
     return (
         <div className="form-check">
-        <input className="form-check-input" type="checkbox" value="" id="defaultCheck1" checked={props.check}/>
-        <label className="form-check-label" for="defaultCheck1">
-        <li key={props.id}>{props.text}</li>
-        </label>
-      </div>
+            <input className="form-check-input" type="checkbox" value="" id="defaultCheck1" checked={props.check}/>
+            <label className="form-check-label" for="defaultCheck1">
+                <li key={props.id}>{props.text}</li>
+            </label>
+        </div>
     );
 }
 
