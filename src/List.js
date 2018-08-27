@@ -14,10 +14,12 @@ class List extends React.Component{
         // Tasks and AddForm events
         this.handleAddTask = this.handleAddTask.bind(this);
         this.handleCheck = this.handleCheck.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
 
         // Firebase events
         this.handleChildAdded = this.handleChildAdded.bind(this);
         this.handleChildChanged = this.handleChildChanged.bind(this);
+        this.handleChildRemoved = this.handleChildRemoved.bind(this);
 
         // Reference for user
         const db = firebase.database();
@@ -27,6 +29,7 @@ class List extends React.Component{
     componentDidMount(){
         this.tasksRef.on('child_added', this.handleChildAdded);
         this.tasksRef.on('child_changed', this.handleChildChanged);
+        this.tasksRef.on('child_removed', this.handleChildRemoved);
     }
 
     handleChildAdded(data){
@@ -57,7 +60,7 @@ class List extends React.Component{
             return;
         }
         const key = this.tasksRef.push().key;
-        this.taskRef.child(key).set({
+        this.tasksRef.child(key).set({
             text: text,
             done: false,
         });
@@ -68,6 +71,22 @@ class List extends React.Component{
         const tasksRef = this.tasksRef.child(parent.id);
         tasksRef.update({done: e.target.checked});
     }
+
+    handleDelete(e){
+        const parent = e.target.closest('.task');
+        const taskRef = this.tasksRef.child(parent.id);
+        taskRef.remove();
+    }
+
+    handleChildRemoved(data){
+        const newTasks = this.state.tasks.concat([]);
+        const inddex = newTasks.findIndex(task => task.id === data.key);
+
+        newTasks.splice(inddex,1);
+
+        this.setState({ tasks: newTasks});
+    }
+
     // 
     render(){
         return (
@@ -94,7 +113,7 @@ class List extends React.Component{
                 <section>
                     <AddForm onAdd={this.handleAddTask} />
                     <h4>Tasks</h4>
-                    <TaskList tasks={this.state.tasks} onCheck={this.handleCheck}/>
+                    <TaskList tasks={this.state.tasks} onCheck={this.handleCheck} onDelete={this.handleDelete}/>
                 </section>
              </section>
             )
@@ -115,7 +134,7 @@ class AddForm extends React.Component{
     }
 
     handleChange(e){
-        // this.setState({value:e.target.value});
+        this.setState({value:e.target.value});
     }
     handleClick(){
         this.props.onAdd(this.state.value); //
@@ -142,7 +161,7 @@ function TaskList(props) {
     return (
         <ul>
         {props.tasks.map(task => (
-            <Task key={task.id} text={task.text} id={task.id} done={task.done} onCheck={props.onCheck} /> 
+            <Task key={task.id} text={task.text} id={task.id} done={task.done} onCheck={props.onCheck} onDelete={props.onDelete}/> 
         ))}
         </ul>);
 }
@@ -162,7 +181,7 @@ class Task extends React.Component{
                 <label className="form-check-label" for="defaultCheck1">
                     <li key={this.props.id}>{this.props.text}</li>
                 </label>
-                <button>delete</button>
+                <button onClick={this.props.onDelete}>delete</button>
             </div>
         );
     }
